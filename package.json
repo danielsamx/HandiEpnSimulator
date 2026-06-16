@@ -1,0 +1,18 @@
+{
+  "name": "handi-epn-v3-simulator",
+  "version": "1.0.0",
+  "description": "3D Simulator for the HANDi EPN V3 Robotic Hand",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  }
+}

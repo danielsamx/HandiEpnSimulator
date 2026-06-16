@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador 3D - Mano Robótica HANDi EPN V3</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <svg class="logo-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="10" rx="2" ry="2" />
+                    <path d="M12 2v9M8 4v7M16 4v7M4 7v4M20 7v4" />
+                </svg>
+                <div class="logo-text">
+                    <h1>HANDi EPN V3</h1>
+                    <span class="subtitle">Simulador 3D Interactivo</span>
+                </div>
+            </div>
+            <div class="server-status">
+                <span class="status-dot online"></span>
+                <span class="status-label">Simulador Activo</span>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <main class="app-main">
+            <!-- 3D Viewport -->
+            <section class="viewport-section" id="canvas-container">
+                <div class="canvas-overlay">
+                    <div class="instructions-bubble">
+                        <span>Arrastra para rotar • Scroll para zoom • Clic derecho para desplazar</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Control Sidebar -->
+            <section class="control-sidebar">
+                <!-- Preset Gestures Grid -->
+                <div class="control-card">
+                    <h2>Gestos Predefinidos</h2>
+                    <div class="presets-grid">
+                        <button class="btn-preset" data-cmd="O" title="Abrir mano">Abrir</button>
+                        <button class="btn-preset" data-cmd="C" title="Cerrar mano">Cerrar</button>
+                        <button class="btn-preset" data-cmd="P" title="Gesto de pinza">Pinza</button>
+                        <button class="btn-preset" data-cmd="R" title="Gesto de Spiderman">Spiderman</button>
+                        <button class="btn-preset" data-cmd="W" title="Garra parcial">Garra</button>
+                        <button class="btn-preset" data-cmd="Y" title="Gesto de OK">OK</button>
+                        <button class="btn-preset" data-cmd="L" title="Gesto de pulgar arriba">Pulgar</button>
+                        <button class="btn-preset" data-cmd="M" title="Gesto de llámame">Llamar</button>
+                        <button class="btn-preset" data-cmd="H" title="Gesto del número tres">Tres</button>
+                        <button class="btn-preset" data-cmd="U" title="Gesto del número cuatro">Cuatro</button>
+                        <button class="btn-preset" data-cmd="G" title="Apuntar con el índice">Apuntar</button>
+                    </div>
+                </div>
+
+                <!-- Custom Command Entry -->
+                <div class="control-card">
+                    <h2>Entrada de Comandos</h2>
+                    <form id="command-form" class="command-form" onsubmit="return false;">
+                        <div class="input-wrapper">
+                            <input type="text" id="commandInput" placeholder="Ej: A300, B250, C400 o Preset" autocomplete="off" autofocus>
+                            <button type="button" id="clearBtn" class="btn-clear" title="Limpiar input">×</button>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" id="sendBtn" class="btn-primary">Enviar Comando</button>
+                        </div>
+                    </form>
+                    <div class="specials-bar">
+                        <button class="btn-special" data-cmd="S">DETENER (S)</button>
+                        <button class="btn-special" data-cmd="X">CALIBRAR (X)</button>
+                        <button class="btn-special" data-cmd="I">REINICIAR (I)</button>
+                    </div>
+                </div>
+
+                <!-- Console & Status Logs -->
+                <div class="control-card console-card">
+                    <div class="card-header-flex">
+                        <h2>Consola de Estado</h2>
+                        <button id="clear-console-btn" class="btn-text">Limpiar logs</button>
+                    </div>
+                    <div id="status-console" class="console-box">
+                        <div class="console-line info">Simulador inicializado. Listo para recibir comandos.</div>
+                    </div>
+                </div>
+
+                <!-- Live Angles Monitor -->
+                <div class="control-card monitor-card">
+                    <h2>Ángulos en Vivo</h2>
+                    <div class="monitor-grid">
+                        <div class="monitor-item" id="mon-A">
+                            <span class="mon-label">Meñique (A)</span>
+                            <span class="mon-val">0.0°</span>
+                            <div class="mon-bar"><div class="mon-bar-fill" style="width: 0%"></div></div>
+                        </div>
+                        <div class="monitor-item" id="mon-B">
+                            <span class="mon-label">Anular (B)</span>
+                            <span class="mon-val">0.0°</span>
+                            <div class="mon-bar"><div class="mon-bar-fill" style="width: 0%"></div></div>
+                        </div>
+                        <div class="monitor-item" id="mon-C">
+                            <span class="mon-label">Medio (C)</span>
+                            <span class="mon-val">0.0°</span>
+                            <div class="mon-bar"><div class="mon-bar-fill" style="width: 0%"></div></div>
+                        </div>
+                        <div class="monitor-item" id="mon-D">
+                            <span class="mon-label">Índice (D)</span>
+                            <span class="mon-val">0.0°</span>
+                            <div class="mon-bar"><div class="mon-bar-fill" style="width: 0%"></div></div>
+                        </div>
+                        <div class="monitor-item" id="mon-E">
+                            <span class="mon-label">Pulgar Inf (E)</span>
+                            <span class="mon-val">0.0°</span>
+                            <div class="mon-bar"><div class="mon-bar-fill" style="width: 0%"></div></div>
+                        </div>
+                        <div class="monitor-item" id="mon-F">
+                            <span class="mon-label">Pulgar Sup (F)</span>
+                            <span class="mon-val">0.0°</span>
+                            <div class="mon-bar"><div class="mon-bar-fill" style="width: 0%"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collapsible Guide -->
+                <details class="guide-details">
+                    <summary>Guía de Comandos del Manual</summary>
+                    <div class="guide-content">
+                        <h3>Individuales (Rango / Ángulo)</h3>
+                        <ul>
+                            <li><strong>A[0-600]</strong>: Meñique (0° - 90°)</li>
+                            <li><strong>B[0-550]</strong>: Anular (0° - 85°)</li>
+                            <li><strong>C[0-600]</strong>: Medio (0° - 95°)</li>
+                            <li><strong>D[0-550]</strong>: Índice (0° - 90°)</li>
+                            <li><strong>E[0-130]</strong>: Pulgar Inferior (0° - 45°)</li>
+                            <li><strong>F[0-400]</strong>: Pulgar Superior (0° - 90°)</li>
+                        </ul>
+                        <h3>Múltiples (Separados por coma)</h3>
+                        <p class="code-example">A300,B250,C400</p>
+                        <h3>Especiales</h3>
+                        <ul>
+                            <li><strong>S</strong>: Detener motores inmediatamente.</li>
+                            <li><strong>X</strong>: Calibrar pose actual como cero.</li>
+                            <li><strong>I</strong>: Inicializar/Resetear ángulos a cero.</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+        </main>
+    </div>
+
+    <!-- Client Logic JS Module -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
