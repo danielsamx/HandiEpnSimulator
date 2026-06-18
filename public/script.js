@@ -229,16 +229,16 @@ function buildPalm() {
     s.lineTo(0, 0);
 
     const extrudeOpts = {
-        depth: 1.0,
+        depth: 0.6,
         bevelEnabled: true,
         bevelSegments: 4,
         steps: 1,
-        bevelSize: 0.18,
-        bevelThickness: 0.15
+        bevelSize: 0.15,
+        bevelThickness: 0.12
     };
 
     const palmGeom = new THREE.ExtrudeGeometry(s, extrudeOpts);
-    palmGeom.translate(0, 0, -0.5);
+    palmGeom.translate(0, 0, -0.3);
     palmGeom.computeVertexNormals();
 
     const palmMesh = new THREE.Mesh(palmGeom, matChassis);
@@ -247,16 +247,16 @@ function buildPalm() {
     palmGroup.add(palmMesh);
 
     // Carcasa del actuador del pulgar (Eminencia Tenar Mecánica)
-    const thenarGeom = new THREE.BoxGeometry(1.4, 1.9, 1.0);
+    const thenarGeom = new THREE.BoxGeometry(1.4, 1.9, 0.7);
     const thenarMesh = new THREE.Mesh(thenarGeom, matChassis);
-    thenarMesh.position.set(0.9, 1.5, 0.3);
+    thenarMesh.position.set(0.9, 1.5, 0.2);
     thenarMesh.rotation.set(0.15, -0.2, -0.35);
     thenarMesh.castShadow = true;
     thenarMesh.receiveShadow = true;
     palmGroup.add(thenarMesh);
 
     // Embellecedor metálico en la base del pulgar
-    const thenarRimGeom = new THREE.BoxGeometry(1.5, 0.2, 1.1);
+    const thenarRimGeom = new THREE.BoxGeometry(1.5, 0.2, 0.8);
     const thenarRim = new THREE.Mesh(thenarRimGeom, matGold);
     thenarRim.position.copy(thenarMesh.position);
     thenarRim.rotation.copy(thenarMesh.rotation);
@@ -265,9 +265,9 @@ function buildPalm() {
     palmGroup.add(thenarRim);
 
     // Radiador/Disipador de Calor (Eminencia Hipotenar Mecánica)
-    const hypoGeom = new THREE.BoxGeometry(0.8, 1.7, 0.85);
+    const hypoGeom = new THREE.BoxGeometry(0.8, 1.7, 0.6);
     const hypoMesh = new THREE.Mesh(hypoGeom, matChrome);
-    hypoMesh.position.set(-1.0, 1.4, 0.25);
+    hypoMesh.position.set(-1.0, 1.4, 0.18);
     hypoMesh.rotation.set(0.1, 0.05, 0.1);
     hypoMesh.castShadow = true;
     hypoMesh.receiveShadow = true;
@@ -275,29 +275,29 @@ function buildPalm() {
 
     // Rejilla del disipador (líneas horizontales en el disipador)
     for (let i = 0; i < 5; i++) {
-        const finGeom = new THREE.BoxGeometry(0.85, 0.08, 0.9);
+        const finGeom = new THREE.BoxGeometry(0.85, 0.08, 0.65);
         const fin = new THREE.Mesh(finGeom, matChassis);
-        fin.position.set(-1.0, 0.8 + i * 0.3, 0.3);
+        fin.position.set(-1.0, 0.8 + i * 0.3, 0.2);
         fin.rotation.set(0.1, 0.05, 0.1);
         fin.castShadow = true;
         palmGroup.add(fin);
     }
 
     // Barra de soporte de nudillos (parachoques superior)
-    const knucklePadGeom = new THREE.CylinderGeometry(0.32, 0.32, 2.6, 16);
+    const knucklePadGeom = new THREE.CylinderGeometry(0.24, 0.24, 2.6, 16);
     knucklePadGeom.rotateZ(Math.PI / 2);
     const knucklePad = new THREE.Mesh(knucklePadGeom, matChrome);
-    knucklePad.position.set(-0.15, 3.8, 0.32);
+    knucklePad.position.set(-0.15, 3.8, 0.22);
     knucklePad.castShadow = true;
     knucklePad.receiveShadow = true;
     palmGroup.add(knucklePad);
 
     // Tapas doradas para la barra de soporte de nudillos
     [-1.35, 1.35].forEach(side => {
-        const endGeom = new THREE.CylinderGeometry(0.38, 0.38, 0.12, 12);
+        const endGeom = new THREE.CylinderGeometry(0.3, 0.3, 0.1, 12);
         endGeom.rotateZ(Math.PI / 2);
         const endMesh = new THREE.Mesh(endGeom, matGold);
-        endMesh.position.set(-0.15 + side, 3.8, 0.32);
+        endMesh.position.set(-0.15 + side, 3.8, 0.22);
         endMesh.castShadow = true;
         palmGroup.add(endMesh);
     });
@@ -306,20 +306,20 @@ function buildPalm() {
     // Circuito 1
     const path1Geom = new THREE.CylinderGeometry(0.045, 0.045, 1.6, 8);
     const path1 = new THREE.Mesh(path1Geom, matGlow);
-    path1.position.set(0.2, 2.2, 0.52);
+    path1.position.set(0.2, 2.2, 0.32);
     path1.rotation.set(0.1, 0.05, -Math.PI * 0.2);
     palmGroup.add(path1);
 
     // Circuito 2
     const path2Geom = new THREE.CylinderGeometry(0.045, 0.045, 1.3, 8);
     const path2 = new THREE.Mesh(path2Geom, matGlow);
-    path2.position.set(-0.4, 2.6, 0.52);
+    path2.position.set(-0.4, 2.6, 0.32);
     path2.rotation.set(0.1, -0.05, Math.PI * 0.3);
     palmGroup.add(path2);
 
     // Nodos de circuito (pequeñas esferas doradas en las intersecciones)
     const nodeGeom = new THREE.SphereGeometry(0.09, 8, 8);
-    [[0.6, 1.6, 0.52], [-0.8, 2.2, 0.52], [0.1, 2.9, 0.52]].forEach(pos => {
+    [[0.6, 1.6, 0.32], [-0.8, 2.2, 0.32], [0.1, 2.9, 0.32]].forEach(pos => {
         const node = new THREE.Mesh(nodeGeom, matGold);
         node.position.set(pos[0], pos[1], pos[2]);
         palmGroup.add(node);
@@ -329,7 +329,7 @@ function buildPalm() {
     [-0.8, -0.3, 0.2, 0.7].forEach(x => {
         const tendonGeom = new THREE.CylinderGeometry(0.06, 0.06, 3.6, 8);
         const tendon = new THREE.Mesh(tendonGeom, matChrome);
-        tendon.position.set(x, 2.0, -0.52);
+        tendon.position.set(x, 2.0, -0.32);
         tendon.rotation.x = -0.08;
         tendon.castShadow = true;
         palmGroup.add(tendon);
@@ -440,8 +440,12 @@ function buildThumb() {
     // Metacarpal del pulgar
     const metacarpal = new THREE.Group();
     metacarpal.position.set(1.65, 1.2, 0.0);
-    metacarpal.rotation.set(0.15, -0.15, -0.45); // Reposo inicial
+    metacarpal.rotation.set(0.25, -0.35, -0.5); // Orientación base estática de la bisagra
     palm.group.add(metacarpal);
+
+    // Pivot group para la oposición limpia del pulgar (Motor E)
+    const E_joint = new THREE.Group();
+    metacarpal.add(E_joint);
 
     // Articulación CMC (Rótula metálica del pulgar)
     const cmcBall = new THREE.Mesh(
@@ -449,33 +453,33 @@ function buildThumb() {
         matChrome
     );
     cmcBall.castShadow = true;
-    metacarpal.add(cmcBall);
+    E_joint.add(cmcBall);
 
     // Anillo dorado de acento en la rótula
     const cmcRingGeom = new THREE.TorusGeometry(0.38, 0.06, 6, 20);
     const cmcRing = new THREE.Mesh(cmcRingGeom, matGold);
     cmcRing.rotation.x = Math.PI / 2;
-    metacarpal.add(cmcRing);
+    E_joint.add(cmcRing);
 
     // Hueso metacarpiano corto (eje mecánico de conexión)
     const metaBoneGeom = new THREE.CylinderGeometry(0.16, 0.2, 0.6, 12);
     const metaBone = new THREE.Mesh(metaBoneGeom, matChrome);
     metaBone.position.set(0, 0.35, 0);
     metaBone.castShadow = true;
-    metacarpal.add(metaBone);
+    E_joint.add(metaBone);
 
     // Cubierta protectora del metacarpiano
     const metaShellGeom = new THREE.BoxGeometry(0.28, 0.4, 0.35);
     const metaShell = new THREE.Mesh(metaShellGeom, matChassis);
     metaShell.position.set(0, 0.35, 0);
     metaShell.castShadow = true;
-    metacarpal.add(metaShell);
+    E_joint.add(metaShell);
 
     // Falange proximal del pulgar
     const proxGroup = new THREE.Group();
     proxGroup.position.set(0, 0.75, 0);
-    proxGroup.rotation.z = -0.2; // Inclinación en reposo
-    metacarpal.add(proxGroup);
+    proxGroup.rotation.set(0, 1.2, -0.2); // Rotación Y invertida para orientar la flexión hacia la palma
+    E_joint.add(proxGroup);
 
     const prox = createFingerSegment(1.1, 0.22, 0.24);
     proxGroup.add(prox.group);
@@ -485,7 +489,7 @@ function buildThumb() {
     dist.group.position.set(0, prox.length, 0);
     prox.group.add(dist.group);
 
-    bones.E.base = metacarpal;
+    bones.E.base = E_joint; // Asignamos E_joint como la base de rotación del motor E
     bones.F.proximal = proxGroup;
     bones.F.distal = dist.group;
 }
@@ -548,14 +552,15 @@ function applyRotations() {
     if (bones.E.base) {
         const norm = currentAngles['E'] / MAX_DEG['E']; // 0..1
 
-        // En reposo (norm=0): (0.15, -0.15, -0.45)
-        // Modificamos la rotación en X para que cuando flexione (norm=1),
-        // se mueva hacia adelante en el eje Z de la palma (hacia -Z),
-        // coincidiendo con la dirección de flexión de los otros dedos.
-        bones.E.base.rotation.x = 0.15 - norm * 0.65;   // Se flexiona hacia el frente de la palma
-        bones.E.base.rotation.y = -0.15 - norm * 0.95;  // Gira hacia adentro (oposición) para encarar los dedos
-        bones.E.base.rotation.z = -0.45 + norm * 0.15;  // Ajuste sutil de torsión lateral
+        // Rotación de bisagra limpia alrededor del eje X local (flexión hacia la palma)
+        // y una rotación complementaria en Y para encarar los dedos.
+        // Al ser un grupo anidado (E_joint), la rotación inicial de la bisagra
+        // se mantiene estática en su padre (metacarpal), evitando giros o bamboleos raros.
+        bones.E.base.rotation.x = -norm * 0.75;
+        bones.E.base.rotation.y = norm * 0.45;
+        bones.E.base.rotation.z = 0; // Sin torsión
     }
+
 
     // --- Pulgar: Flexión de falanges (F) ---
     if (bones.F.proximal || bones.F.distal) {
