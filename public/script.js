@@ -544,9 +544,9 @@ function applyRotations() {
     ['A', 'B', 'C', 'D'].forEach(f => {
         const rad = degToRad(f, currentAngles[f]);
         const b = bones[f];
-        if (b.proximal) b.proximal.rotation.x = -rad * 0.40;
-        if (b.intermediate) b.intermediate.rotation.x = -rad * 0.35;
-        if (b.distal) b.distal.rotation.x = -rad * 0.30;
+        if (b.proximal) b.proximal.rotation.x = -rad * 0.55;
+        if (b.intermediate) b.intermediate.rotation.x = -rad * 0.45;
+        if (b.distal) b.distal.rotation.x = -rad * 0.35;
     });
 
     // --- Pulgar: Articulación CMC (E) = Oposición multiaxial ---

@@ -22,7 +22,7 @@ const PRESETS = {
     },
     'R': {
         description: 'Gesto de Spiderman (medio y anular doblados)',
-        angles: { A: 0, B: 80, C: 80, D: 0, E: 0, F: 0 }
+        angles: { A: 0, B: 85, C: 95, D: 0, E: 0, F: 0 }
     },
     'W': {
         description: 'Garra parcial (dedo índice y anular cerrados)',
