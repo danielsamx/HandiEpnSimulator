@@ -516,7 +516,7 @@ const currentAngles = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0 };
 let isStopped = false;
 const LERP_FACTOR = 0.08;
 
-const MAX_DEG = { A: 90, B: 85, C: 95, D: 90, E: 45, F: 90 };
+const MAX_DEG = { A: 90, B: 130, C: 150, D: 90, E: 45, F: 90 };
 
 function degToRad(finger, deg) {
     const clamped = Math.max(0, Math.min(deg, MAX_DEG[finger]));
@@ -544,9 +544,9 @@ function applyRotations() {
     ['A', 'B', 'C', 'D'].forEach(f => {
         const rad = degToRad(f, currentAngles[f]);
         const b = bones[f];
-        if (b.proximal) b.proximal.rotation.x = -rad * 0.55;
-        if (b.intermediate) b.intermediate.rotation.x = -rad * 0.45;
-        if (b.distal) b.distal.rotation.x = -rad * 0.35;
+        if (b.proximal) b.proximal.rotation.x = -rad * 0.80;
+        if (b.intermediate) b.intermediate.rotation.x = -rad * 0.70;
+        if (b.distal) b.distal.rotation.x = -rad * 0.60;
     });
 
     // --- Pulgar: Articulación CMC (E) = Oposición multiaxial ---
