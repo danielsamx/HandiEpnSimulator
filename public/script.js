@@ -73,7 +73,7 @@ scene.add(shadowFloor);
 // MATERIALES ROBÓTICOS DE ALTA TECNOLOGÍA (ESTILO CYBERPUNK/INDUSTRIAL)
 // ============================================================================
 const matChassis = new THREE.MeshStandardMaterial({
-    color: 0x1e293b,      // Gris oscuro mate (polímero/fibra de carbono base)
+    color: 0x4a5b78,      // Gris medio claro para mayor contraste
     roughness: 0.45,
     metalness: 0.25
 });
