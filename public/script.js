@@ -6,8 +6,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 // ============================================================================
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x070b13);
-scene.fog = new THREE.FogExp2(0x070b13, 0.018);
+scene.background = new THREE.Color(0x0b0f19); // Fondo oscuro original
+scene.fog = new THREE.FogExp2(0x0b0f19, 0.018);
 
 const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
 camera.position.set(0, 12, 20);
@@ -18,7 +18,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
+renderer.toneMappingExposure = 1.05;
 container.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -30,117 +30,177 @@ controls.maxDistance = 35;
 controls.target.set(0, 3, 0);
 
 // ============================================================================
-// ILUMINACIÓN
+// ILUMINACIÓN MECÁNICA/ESTUDIO DE ALTO CONTRASTE
 // ============================================================================
 scene.add(new THREE.AmbientLight(0xffffff, 0.35));
 
-const keyLight = new THREE.SpotLight(0xffffff, 5.0);
-keyLight.position.set(6, 18, 12);
-keyLight.angle = Math.PI / 5;
-keyLight.penumbra = 0.7;
+const keyLight = new THREE.SpotLight(0xffffff, 9.0);
+keyLight.position.set(8, 20, 12);
+keyLight.angle = Math.PI / 4;
+keyLight.penumbra = 0.8;
 keyLight.castShadow = true;
 keyLight.shadow.mapSize.set(2048, 2048);
 keyLight.shadow.bias = -0.00005;
 scene.add(keyLight);
 
-const fillLight = new THREE.DirectionalLight(0xcce0ff, 0.55);
-fillLight.position.set(-8, 10, -4);
+const fillLight = new THREE.DirectionalLight(0x3b82f6, 0.85); // Relleno azul tecnológico
+fillLight.position.set(-10, 8, -6);
 scene.add(fillLight);
 
-const rimLight = new THREE.PointLight(0x00e5ff, 2.0, 20);
-rimLight.position.set(-6, 4, 6);
+const rimLight = new THREE.PointLight(0x00f0ff, 2.5, 20); // Luz de contorno cian de alta intensidad
+rimLight.position.set(-6, 6, 8);
 scene.add(rimLight);
 
-scene.add(new THREE.HemisphereLight(0xeef4ff, 0x111827, 0.2));
+scene.add(new THREE.HemisphereLight(0xffffff, 0x090d16, 0.4));
 
-// Suelo
-const grid = new THREE.GridHelper(30, 30, 0x00e5ff, 0x0f1a2e);
+// Suelo y Cuadrícula (Estilo cibernético)
+const grid = new THREE.GridHelper(30, 30, 0x06b6d4, 0x1e293b);
 grid.position.y = -5;
 grid.material.opacity = 0.25;
 grid.material.transparent = true;
 scene.add(grid);
 
+// Plano receptor de sombras de alto contraste en suelo oscuro
+const shadowFloorGeom = new THREE.PlaneGeometry(100, 100);
+const shadowFloorMat = new THREE.ShadowMaterial({ opacity: 0.45 });
+const shadowFloor = new THREE.Mesh(shadowFloorGeom, shadowFloorMat);
+shadowFloor.rotation.x = -Math.PI / 2;
+shadowFloor.position.y = -5;
+shadowFloor.receiveShadow = true;
+scene.add(shadowFloor);
+
 // ============================================================================
-// MATERIALES
+// MATERIALES ROBÓTICOS DE ALTA TECNOLOGÍA (ESTILO CYBERPUNK/INDUSTRIAL)
 // ============================================================================
-const matShell = new THREE.MeshStandardMaterial({
-    color: 0xf0f4f8, metalness: 0.08, roughness: 0.18
+const matChassis = new THREE.MeshStandardMaterial({
+    color: 0x1e293b,      // Gris oscuro mate (polímero/fibra de carbono base)
+    roughness: 0.45,
+    metalness: 0.25
 });
-const matMetal = new THREE.MeshStandardMaterial({
-    color: 0x94a3b8, metalness: 0.92, roughness: 0.14
+
+const matChrome = new THREE.MeshPhysicalMaterial({
+    color: 0xe2e8f0,      // Acero/cromo brillante para ejes y pistones
+    roughness: 0.1,
+    metalness: 1.0,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.1
 });
-const matChrome = new THREE.MeshStandardMaterial({
-    color: 0xffffff, metalness: 1.0, roughness: 0.04
+
+const matGold = new THREE.MeshStandardMaterial({
+    color: 0xd4af37,      // Oro/latón pulido para juntas y pernos de acento
+    roughness: 0.2,
+    metalness: 0.95
 });
-const matAccent = new THREE.MeshStandardMaterial({
-    color: 0x0ea5e9, metalness: 0.1, roughness: 0.7, emissive: 0x0284c7, emissiveIntensity: 0.15
+
+const matGrip = new THREE.MeshStandardMaterial({
+    color: 0x090d16,      // Caucho/silicona antideslizante para la cara palmar
+    roughness: 0.9,
+    metalness: 0.0
 });
-const matDark = new THREE.MeshStandardMaterial({
-    color: 0x1e293b, metalness: 0.3, roughness: 0.55
+
+const matGlow = new THREE.MeshBasicMaterial({
+    color: 0x00f0ff,      // Neón cian para circuitos y emisores
+    toneMapped: false
 });
-const matRubber = new THREE.MeshStandardMaterial({
-    color: 0x334155, metalness: 0.05, roughness: 0.9
-});
+
+// Mapeos de compatibilidad con código existente
+const matSkin = matChassis;
+const matNail = matChrome;
+const matWrinkle = matGold;
+const matShell = matChassis;
+const matMetal = matChrome;
+const matAccent = matGold;
+const matDark = matChassis;
+const matRubber = matGrip;
 
 // ============================================================================
 // UTILIDADES PARA GEOMETRÍA ORGÁNICA
 // ============================================================================
 
 /**
- * Crea una cápsula redondeada (cilindro con hemisferios en los extremos)
- */
-function createCapsule(radius, height, segments = 16) {
-    const geom = new THREE.CapsuleGeometry(radius, height, segments / 2, segments);
-    return geom;
-}
-
-/**
- * Crea un segmento de dedo anatómico con carcasa exterior y articulación
+ * Crea un segmento de dedo anatómico (falange) con volumen de piel, pliegues y uñas
  */
 function createFingerSegment(length, radiusTop, radiusBot, isDistal = false) {
     const group = new THREE.Group();
 
-    // Articulación esférica en la base (cromo)
     const jointRadius = radiusBot * 1.15;
-    const jointSphere = new THREE.Mesh(
-        new THREE.SphereGeometry(jointRadius, 20, 20),
-        matChrome
-    );
-    jointSphere.castShadow = true;
-    group.add(jointSphere);
 
-    // Carcasa exterior (forma de cápsula alargada)
-    const capsuleLen = length - jointRadius;
-    const shellGeom = createCapsule(radiusTop * 0.95, capsuleLen, 16);
-    shellGeom.translate(0, capsuleLen / 2 + jointRadius * 0.6, 0);
-    const shellMesh = new THREE.Mesh(shellGeom, matShell);
-    shellMesh.castShadow = true;
-    shellMesh.receiveShadow = true;
-    group.add(shellMesh);
+    // 1. EJE DE BISAGRA MECÁNICA (Cilindro horizontal a lo largo del eje X)
+    const hingeGeom = new THREE.CylinderGeometry(jointRadius * 0.85, jointRadius * 0.85, jointRadius * 2.3, 16);
+    hingeGeom.rotateZ(Math.PI / 2); // Alinea el cilindro con el eje X
+    const hingeMesh = new THREE.Mesh(hingeGeom, matChrome);
+    hingeMesh.castShadow = true;
+    hingeMesh.receiveShadow = true;
+    group.add(hingeMesh);
 
-    // Estructura interna de metal visible entre carcasa y articulación
-    const innerLen = capsuleLen * 0.7;
-    const innerGeom = new THREE.CylinderGeometry(radiusTop * 0.45, radiusBot * 0.5, innerLen, 12);
-    innerGeom.translate(0, innerLen / 2 + jointRadius * 0.5, 0);
-    const innerMesh = new THREE.Mesh(innerGeom, matMetal);
-    innerMesh.castShadow = true;
-    group.add(innerMesh);
+    // 2. TAPAS/PERNOS DE ARTICULACIÓN (Detalles dorados en los extremos)
+    [-1.15, 1.15].forEach(side => {
+        const capGeom = new THREE.CylinderGeometry(jointRadius * 1.0, jointRadius * 1.0, jointRadius * 0.25, 12);
+        capGeom.rotateZ(Math.PI / 2);
+        const capMesh = new THREE.Mesh(capGeom, matGold);
+        capMesh.position.x = side * jointRadius;
+        capMesh.castShadow = true;
+        group.add(capMesh);
+    });
 
-    // Almohadilla de agarre en la cara palmar (-Z)
-    if (!isDistal) {
-        const padGeom = new THREE.BoxGeometry(radiusTop * 1.4, length * 0.55, radiusTop * 0.25);
-        padGeom.translate(0, length * 0.52, -radiusTop * 0.85);
-        const padMesh = new THREE.Mesh(padGeom, matAccent);
-        padMesh.castShadow = true;
-        group.add(padMesh);
-    } else {
-        // Punta de goma de agarre para el segmento distal
-        const tipGeom = new THREE.SphereGeometry(radiusTop * 0.85, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
-        tipGeom.rotateX(Math.PI);
+    // 3. CUERPO DE LA FALANGE (Chasis robótico principal)
+    const cylLength = length - jointRadius * 0.55;
+    const bodyGeom = new THREE.CylinderGeometry(radiusTop * 0.95, radiusBot * 0.95, cylLength, 16, 2);
+    bodyGeom.translate(0, cylLength / 2 + jointRadius * 0.45, 0);
+    const bodyMesh = new THREE.Mesh(bodyGeom, matChassis);
+    bodyMesh.castShadow = true;
+    bodyMesh.receiveShadow = true;
+    group.add(bodyMesh);
+
+    // 4. LÍNEA DE NEÓN (LED indicador de estado en la parte posterior/dorsal +Z)
+    const neonGeom = new THREE.BoxGeometry(radiusBot * 0.25, cylLength * 0.75, radiusBot * 0.15);
+    neonGeom.translate(0, cylLength / 2 + jointRadius * 0.45, radiusBot * 0.9);
+    const neonMesh = new THREE.Mesh(neonGeom, matGlow);
+    group.add(neonMesh);
+
+    // 5. ALMOHADILLA DE AGARRE (Caucho antideslizante en la parte frontal/palmar -Z)
+    const gripGeom = new THREE.BoxGeometry(radiusBot * 1.15, cylLength * 0.8, radiusBot * 0.35);
+    gripGeom.translate(0, cylLength / 2 + jointRadius * 0.45, -radiusBot * 0.8);
+    const gripMesh = new THREE.Mesh(gripGeom, matGrip);
+    gripMesh.castShadow = true;
+    gripMesh.receiveShadow = true;
+    group.add(gripMesh);
+
+    // Si es falange distal (punta), añadimos sensor táctil
+    if (isDistal) {
+        // Yema robótica redondeada
+        const tipRadius = radiusTop * 0.95;
+        const tipGeom = new THREE.SphereGeometry(tipRadius, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+        tipGeom.scale(1.0, 0.85, 1.05);
         tipGeom.translate(0, length, 0);
-        const tipMesh = new THREE.Mesh(tipGeom, matRubber);
+        const tipMesh = new THREE.Mesh(tipGeom, matChassis);
         tipMesh.castShadow = true;
+        tipMesh.receiveShadow = true;
         group.add(tipMesh);
+
+        // Sensor de contacto (pequeño domo dorado en la punta)
+        const sensorGeom = new THREE.SphereGeometry(radiusTop * 0.55, 12, 12);
+        sensorGeom.translate(0, length + radiusTop * 0.15, 0);
+        const sensorMesh = new THREE.Mesh(sensorGeom, matGold);
+        sensorMesh.castShadow = true;
+        group.add(sensorMesh);
+
+        // Placa del sensor dorsal (reemplaza la uña)
+        const plateGeom = new THREE.BoxGeometry(radiusTop * 1.2, length * 0.35, radiusTop * 0.08);
+        plateGeom.translate(0, length - length * 0.2, radiusTop * 0.75);
+        const plateMesh = new THREE.Mesh(plateGeom, matChrome);
+        plateMesh.castShadow = true;
+        group.add(plateMesh);
+    } else {
+        // Abrazaderas metálicas / anillos de refuerzo en falanges intermedias
+        [jointRadius * 0.6, length - radiusTop * 0.7].forEach(yPos => {
+            const ringGeom = new THREE.TorusGeometry(radiusBot * 1.08, radiusBot * 0.07, 6, 20);
+            ringGeom.rotateX(Math.PI / 2);
+            const ringMesh = new THREE.Mesh(ringGeom, matGold);
+            ringMesh.position.y = yPos;
+            ringMesh.castShadow = true;
+            group.add(ringMesh);
+        });
     }
 
     return { group, length };
@@ -152,79 +212,128 @@ function createFingerSegment(length, radiusTop, radiusBot, isDistal = false) {
 const handGroup = new THREE.Group();
 scene.add(handGroup);
 
-// --- PALMA ANATÓMICA (Forma orgánica con curvas) ---
+// --- PALMA ANATÓMICA (Forma orgánica con eminencias y pliegues) ---
 function buildPalm() {
     const palmGroup = new THREE.Group();
 
-    // Forma principal de la palma usando un polígono suavizado y extruido
+    // Forma principal de la palma (chasis estructural)
     const s = new THREE.Shape();
-
-    // Trazar el contorno de la palma (vista dorsal, Y hacia arriba)
-    // Comenzamos en la base (muñeca) y recorremos en sentido horario
     s.moveTo(0, 0);
-    // Lado derecho (lado del pulgar) - curva convexa del tenar
-    s.quadraticCurveTo(2.2, 0.3, 2.0, 1.8);
-    s.quadraticCurveTo(1.95, 2.8, 1.6, 3.8);
-    // Borde superior de nudillos (arco suave)
-    s.quadraticCurveTo(1.4, 4.5, 0.8, 4.65);
-    s.quadraticCurveTo(0.0, 4.85, -0.8, 4.6);
-    s.quadraticCurveTo(-1.3, 4.4, -1.6, 3.8);
-    // Lado izquierdo (meñique) - curva cóncava del hipotenar
-    s.quadraticCurveTo(-1.75, 2.8, -1.65, 1.8);
-    s.quadraticCurveTo(-1.5, 0.5, -0.8, 0.05);
+    s.quadraticCurveTo(2.1, 0.4, 1.9, 1.8);
+    s.quadraticCurveTo(1.85, 2.8, 1.5, 3.8);
+    s.quadraticCurveTo(1.3, 4.4, 0.8, 4.55);
+    s.quadraticCurveTo(0.0, 4.75, -0.8, 4.5);
+    s.quadraticCurveTo(-1.3, 4.3, -1.5, 3.8);
+    s.quadraticCurveTo(-1.65, 2.8, -1.55, 1.8);
+    s.quadraticCurveTo(-1.4, 0.5, -0.7, 0.05);
     s.lineTo(0, 0);
 
     const extrudeOpts = {
-        depth: 1.1,
+        depth: 1.0,
         bevelEnabled: true,
-        bevelSegments: 5,
+        bevelSegments: 4,
         steps: 1,
         bevelSize: 0.18,
         bevelThickness: 0.15
     };
 
     const palmGeom = new THREE.ExtrudeGeometry(s, extrudeOpts);
-    palmGeom.translate(0, 0, -0.55);
+    palmGeom.translate(0, 0, -0.5);
     palmGeom.computeVertexNormals();
 
-    const palmMesh = new THREE.Mesh(palmGeom, matShell);
+    const palmMesh = new THREE.Mesh(palmGeom, matChassis);
     palmMesh.castShadow = true;
     palmMesh.receiveShadow = true;
     palmGroup.add(palmMesh);
 
-    // Cara palmar más oscura (placa interior metálica)
-    const innerGeom = new THREE.ExtrudeGeometry(s, {
-        depth: 0.15,
-        bevelEnabled: true,
-        bevelSegments: 2,
-        steps: 1,
-        bevelSize: 0.05,
-        bevelThickness: 0.05
-    });
-    innerGeom.translate(0, 0, -0.62);
-    const innerMesh = new THREE.Mesh(innerGeom, matMetal);
-    innerMesh.castShadow = true;
-    palmGroup.add(innerMesh);
+    // Carcasa del actuador del pulgar (Eminencia Tenar Mecánica)
+    const thenarGeom = new THREE.BoxGeometry(1.4, 1.9, 1.0);
+    const thenarMesh = new THREE.Mesh(thenarGeom, matChassis);
+    thenarMesh.position.set(0.9, 1.5, 0.3);
+    thenarMesh.rotation.set(0.15, -0.2, -0.35);
+    thenarMesh.castShadow = true;
+    thenarMesh.receiveShadow = true;
+    palmGroup.add(thenarMesh);
 
-    // Líneas de tendones visibles (cables de accionamiento)
-    const tendonPositions = [
-        { x: -1.1, y: 2.2 }, { x: -0.4, y: 2.4 },
-        { x: 0.35, y: 2.5 }, { x: 1.05, y: 2.3 }
-    ];
-    tendonPositions.forEach(pos => {
-        const tendonGeom = new THREE.CylinderGeometry(0.04, 0.04, 3.5, 6);
-        const tendonMesh = new THREE.Mesh(tendonGeom, matDark);
-        tendonMesh.position.set(pos.x, pos.y, -0.5);
-        tendonMesh.castShadow = true;
-        palmGroup.add(tendonMesh);
+    // Embellecedor metálico en la base del pulgar
+    const thenarRimGeom = new THREE.BoxGeometry(1.5, 0.2, 1.1);
+    const thenarRim = new THREE.Mesh(thenarRimGeom, matGold);
+    thenarRim.position.copy(thenarMesh.position);
+    thenarRim.rotation.copy(thenarMesh.rotation);
+    thenarRim.position.y -= 0.65;
+    thenarRim.castShadow = true;
+    palmGroup.add(thenarRim);
+
+    // Radiador/Disipador de Calor (Eminencia Hipotenar Mecánica)
+    const hypoGeom = new THREE.BoxGeometry(0.8, 1.7, 0.85);
+    const hypoMesh = new THREE.Mesh(hypoGeom, matChrome);
+    hypoMesh.position.set(-1.0, 1.4, 0.25);
+    hypoMesh.rotation.set(0.1, 0.05, 0.1);
+    hypoMesh.castShadow = true;
+    hypoMesh.receiveShadow = true;
+    palmGroup.add(hypoMesh);
+
+    // Rejilla del disipador (líneas horizontales en el disipador)
+    for (let i = 0; i < 5; i++) {
+        const finGeom = new THREE.BoxGeometry(0.85, 0.08, 0.9);
+        const fin = new THREE.Mesh(finGeom, matChassis);
+        fin.position.set(-1.0, 0.8 + i * 0.3, 0.3);
+        fin.rotation.set(0.1, 0.05, 0.1);
+        fin.castShadow = true;
+        palmGroup.add(fin);
+    }
+
+    // Barra de soporte de nudillos (parachoques superior)
+    const knucklePadGeom = new THREE.CylinderGeometry(0.32, 0.32, 2.6, 16);
+    knucklePadGeom.rotateZ(Math.PI / 2);
+    const knucklePad = new THREE.Mesh(knucklePadGeom, matChrome);
+    knucklePad.position.set(-0.15, 3.8, 0.32);
+    knucklePad.castShadow = true;
+    knucklePad.receiveShadow = true;
+    palmGroup.add(knucklePad);
+
+    // Tapas doradas para la barra de soporte de nudillos
+    [-1.35, 1.35].forEach(side => {
+        const endGeom = new THREE.CylinderGeometry(0.38, 0.38, 0.12, 12);
+        endGeom.rotateZ(Math.PI / 2);
+        const endMesh = new THREE.Mesh(endGeom, matGold);
+        endMesh.position.set(-0.15 + side, 3.8, 0.32);
+        endMesh.castShadow = true;
+        palmGroup.add(endMesh);
     });
 
-    // Detalle: línea de acento luminosa en el dorso
-    const accentGeom = new THREE.TorusGeometry(1.4, 0.03, 8, 32, Math.PI * 0.7);
-    const accentMesh = new THREE.Mesh(accentGeom, matAccent);
-    accentMesh.position.set(0.1, 3.2, 0.65);
-    accentMesh.rotation.set(Math.PI / 2, 0, Math.PI * 0.15);
-    palmGroup.add(accentMesh);
+    // Líneas de Circuitos Integrados de Neón (Reemplazan líneas de la vida/cabeza)
+    // Circuito 1
+    const path1Geom = new THREE.CylinderGeometry(0.045, 0.045, 1.6, 8);
+    const path1 = new THREE.Mesh(path1Geom, matGlow);
+    path1.position.set(0.2, 2.2, 0.52);
+    path1.rotation.set(0.1, 0.05, -Math.PI * 0.2);
+    palmGroup.add(path1);
+
+    // Circuito 2
+    const path2Geom = new THREE.CylinderGeometry(0.045, 0.045, 1.3, 8);
+    const path2 = new THREE.Mesh(path2Geom, matGlow);
+    path2.position.set(-0.4, 2.6, 0.52);
+    path2.rotation.set(0.1, -0.05, Math.PI * 0.3);
+    palmGroup.add(path2);
+
+    // Nodos de circuito (pequeñas esferas doradas en las intersecciones)
+    const nodeGeom = new THREE.SphereGeometry(0.09, 8, 8);
+    [[0.6, 1.6, 0.52], [-0.8, 2.2, 0.52], [0.1, 2.9, 0.52]].forEach(pos => {
+        const node = new THREE.Mesh(nodeGeom, matGold);
+        node.position.set(pos[0], pos[1], pos[2]);
+        palmGroup.add(node);
+    });
+
+    // Tendones mecánicos en el dorso (-Z)
+    [-0.8, -0.3, 0.2, 0.7].forEach(x => {
+        const tendonGeom = new THREE.CylinderGeometry(0.06, 0.06, 3.6, 8);
+        const tendon = new THREE.Mesh(tendonGeom, matChrome);
+        tendon.position.set(x, 2.0, -0.52);
+        tendon.rotation.x = -0.08;
+        tendon.castShadow = true;
+        palmGroup.add(tendon);
+    });
 
     return { group: palmGroup, mesh: palmMesh };
 }
@@ -232,28 +341,55 @@ function buildPalm() {
 const palm = buildPalm();
 handGroup.add(palm.group);
 
-// --- MUÑECA Y ANTEBRAZO ---
+// --- MUÑECA Y ANTEBRAZO (Estilo orgánico cubierto de piel) ---
+// Articulación de rótula de la muñeca (Rótula metálica industrial)
 const wristBall = new THREE.Mesh(
-    new THREE.SphereGeometry(1.0, 24, 24),
+    new THREE.SphereGeometry(0.9, 24, 24),
     matChrome
 );
-wristBall.position.set(0, -0.15, 0);
+wristBall.position.set(0, -0.1, 0);
 wristBall.castShadow = true;
+wristBall.receiveShadow = true;
 handGroup.add(wristBall);
 
-const forearmGeom = new THREE.CylinderGeometry(0.9, 1.2, 3.5, 20);
-const forearm = new THREE.Mesh(forearmGeom, matDark);
-forearm.position.set(0, -2.2, 0);
+// Chasis del antebrazo
+const forearmGeom = new THREE.CylinderGeometry(0.85, 1.05, 3.5, 16);
+const forearm = new THREE.Mesh(forearmGeom, matChassis);
+forearm.position.set(0, -2.1, 0);
 forearm.castShadow = true;
+forearm.receiveShadow = true;
 handGroup.add(forearm);
 
-// Varillas de soporte del antebrazo
-[-0.7, 0.7].forEach(x => {
-    const rodGeom = new THREE.CylinderGeometry(0.08, 0.08, 3.6, 8);
-    const rod = new THREE.Mesh(rodGeom, matMetal);
-    rod.position.set(x, -2.2, 0);
-    rod.castShadow = true;
-    handGroup.add(rod);
+// Anillo decorativo en la base del antebrazo
+const forearmRingGeom = new THREE.CylinderGeometry(1.1, 1.1, 0.3, 16);
+const forearmRing = new THREE.Mesh(forearmRingGeom, matGold);
+forearmRing.position.set(0, -3.7, 0);
+forearmRing.castShadow = true;
+handGroup.add(forearmRing);
+
+// Varillas mecánicas/pistones del antebrazo
+[-0.48, 0.48].forEach(x => {
+    // Eje interior de cromo
+    const innerRodGeom = new THREE.CylinderGeometry(0.08, 0.08, 3.5, 8);
+    const innerRod = new THREE.Mesh(innerRodGeom, matChrome);
+    innerRod.position.set(x, -2.1, 0.0);
+    innerRod.castShadow = true;
+    innerRod.receiveShadow = true;
+    handGroup.add(innerRod);
+
+    // Carcasa exterior corta
+    const outerCylGeom = new THREE.CylinderGeometry(0.16, 0.18, 1.8, 12);
+    const outerCyl = new THREE.Mesh(outerCylGeom, matChassis);
+    outerCyl.position.set(x, -2.9, 0.0);
+    outerCyl.castShadow = true;
+    handGroup.add(outerCyl);
+
+    // Acento dorado
+    const collarGeom = new THREE.CylinderGeometry(0.19, 0.19, 0.15, 12);
+    const collar = new THREE.Mesh(collarGeom, matGold);
+    collar.position.set(x, -2.0, 0.0);
+    collar.castShadow = true;
+    handGroup.add(collar);
 });
 
 // ============================================================================
@@ -298,37 +434,47 @@ function buildFinger(letter, x, y, z, splayZ, thickness, lengthScale) {
 
 /**
  * Construye el pulgar con anatomía realista.
- * El pulgar se ancla a la eminencia tenar de la palma,
- * con una articulación CMC (carpometacarpiana) multi-eje.
+ * El pulgar se ancla a la eminencia tenar de la palma.
  */
 function buildThumb() {
-    // Metacarpiano del pulgar (hueso que conecta palma → primera articulación)
+    // Metacarpal del pulgar
     const metacarpal = new THREE.Group();
-    metacarpal.position.set(1.65, 1.2, 0.0);     // Unido al borde del tenar
-    metacarpal.rotation.set(0.15, -0.15, -0.45);  // Posición de reposo natural
+    metacarpal.position.set(1.65, 1.2, 0.0);
+    metacarpal.rotation.set(0.15, -0.15, -0.45); // Reposo inicial
     palm.group.add(metacarpal);
 
-    // Articulación CMC (rótula grande en la base)
+    // Articulación CMC (Rótula metálica del pulgar)
     const cmcBall = new THREE.Mesh(
-        new THREE.SphereGeometry(0.32, 20, 20),
+        new THREE.SphereGeometry(0.36, 20, 20),
         matChrome
     );
     cmcBall.castShadow = true;
     metacarpal.add(cmcBall);
 
-    // Segmento metacarpiano corto (el "puente" dentro de la palma)
-    const metaBone = new THREE.Mesh(
-        new THREE.CapsuleGeometry(0.18, 0.6, 8, 12),
-        matShell
-    );
-    metaBone.position.set(0, 0.45, 0);
+    // Anillo dorado de acento en la rótula
+    const cmcRingGeom = new THREE.TorusGeometry(0.38, 0.06, 6, 20);
+    const cmcRing = new THREE.Mesh(cmcRingGeom, matGold);
+    cmcRing.rotation.x = Math.PI / 2;
+    metacarpal.add(cmcRing);
+
+    // Hueso metacarpiano corto (eje mecánico de conexión)
+    const metaBoneGeom = new THREE.CylinderGeometry(0.16, 0.2, 0.6, 12);
+    const metaBone = new THREE.Mesh(metaBoneGeom, matChrome);
+    metaBone.position.set(0, 0.35, 0);
     metaBone.castShadow = true;
     metacarpal.add(metaBone);
 
+    // Cubierta protectora del metacarpiano
+    const metaShellGeom = new THREE.BoxGeometry(0.28, 0.4, 0.35);
+    const metaShell = new THREE.Mesh(metaShellGeom, matChassis);
+    metaShell.position.set(0, 0.35, 0);
+    metaShell.castShadow = true;
+    metacarpal.add(metaShell);
+
     // Falange proximal del pulgar
     const proxGroup = new THREE.Group();
-    proxGroup.position.set(0, 0.8, 0);
-    proxGroup.rotation.z = -0.2;
+    proxGroup.position.set(0, 0.75, 0);
+    proxGroup.rotation.z = -0.2; // Inclinación en reposo
     metacarpal.add(proxGroup);
 
     const prox = createFingerSegment(1.1, 0.22, 0.24);
@@ -400,21 +546,22 @@ function applyRotations() {
 
     // --- Pulgar: Articulación CMC (E) = Oposición multiaxial ---
     if (bones.E.base) {
-        const t = degToRad('E', currentAngles['E']); // 0 → ~0.785 rad (45°)
         const norm = currentAngles['E'] / MAX_DEG['E']; // 0..1
 
-        // Reposo: rotation(0.15, -0.15, -0.45)
-        // Oposición total: el pulgar cruza la palma para encontrar los dedos
-        bones.E.base.rotation.x = 0.15 + norm * 0.80;   // Se inclina hacia adelante
-        bones.E.base.rotation.y = -0.15 - norm * 1.1;   // Rota hacia adentro (oposición)
-        bones.E.base.rotation.z = -0.45 + norm * 0.35;  // Rota sobre sí mismo
+        // En reposo (norm=0): (0.15, -0.15, -0.45)
+        // Modificamos la rotación en X para que cuando flexione (norm=1),
+        // se mueva hacia adelante en el eje Z de la palma (hacia -Z),
+        // coincidiendo con la dirección de flexión de los otros dedos.
+        bones.E.base.rotation.x = 0.15 - norm * 0.65;   // Se flexiona hacia el frente de la palma
+        bones.E.base.rotation.y = -0.15 - norm * 0.95;  // Gira hacia adentro (oposición) para encarar los dedos
+        bones.E.base.rotation.z = -0.45 + norm * 0.15;  // Ajuste sutil de torsión lateral
     }
 
     // --- Pulgar: Flexión de falanges (F) ---
     if (bones.F.proximal || bones.F.distal) {
         const rad = degToRad('F', currentAngles['F']);
-        if (bones.F.proximal) bones.F.proximal.rotation.x = -rad * 0.55;
-        if (bones.F.distal)   bones.F.distal.rotation.x   = -rad * 0.50;
+        if (bones.F.proximal) bones.F.proximal.rotation.x = -rad * 0.65;
+        if (bones.F.distal)   bones.F.distal.rotation.x   = -rad * 0.55;
     }
 }
 

@@ -4,21 +4,21 @@
     --bg-card-border: rgba(255, 255, 255, 0.08);
     --text-primary: #F3F4F6;
     --text-secondary: #9CA3AF;
-    
+
     --color-primary: #3b82f6;
     --color-primary-glow: rgba(59, 130, 246, 0.4);
     --color-cyan: #06b6d4;
     --color-cyan-glow: rgba(6, 182, 212, 0.4);
-    
+
     --color-success: #10b981;
     --color-success-bg: rgba(16, 185, 129, 0.15);
-    
+
     --color-error: #ef4444;
     --color-error-bg: rgba(239, 68, 68, 0.15);
-    
+
     --color-warning: #f59e0b;
     --color-warning-bg: rgba(245, 158, 11, 0.15);
-    
+
     --color-info: #6366f1;
     --color-info-bg: rgba(99, 102, 241, 0.15);
 
@@ -113,19 +113,78 @@ body {
     color: #e2e8f0;
 }
 
+/* Custom scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(11, 15, 25, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(6, 182, 212, 0.4);
+}
+
 /* Main Layout */
 .app-main {
     display: flex;
+    flex-direction: row;
+    /* Contenedor izquierdo y columna de controles frente a frente */
     flex: 1;
     height: calc(100vh - 57px);
     overflow: hidden;
 }
 
-/* 3D Viewport */
-.viewport-section {
+/* Contenedor Izquierdo (Guía + Viewport + Logs) */
+.left-container {
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    height: 100%;
+    min-width: 0;
+    /* Permite reducir el tamaño flex adecuadamente */
+}
+
+/* Fila Superior (Guía + Viewport) */
+.top-row {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+}
+
+/* Estilos Generales de Columnas */
+.column {
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Columna 1: Guía */
+.guide-column {
+    width: 300px;
+    min-width: 260px;
+    background: rgba(15, 22, 42, 0.25);
+    border-right: 1px solid var(--bg-card-border);
+    padding: 16px;
+}
+
+/* Columna 2: Viewport del modelo 3D */
+.viewport-column {
+    flex: 2;
     position: relative;
-    outline: none;
+    background: #0B0F19;
+    /* Fondo oscuro original */
+    overflow: hidden;
+    /* El canvas de Three.js no debe scrollear */
 }
 
 .canvas-overlay {
@@ -146,27 +205,20 @@ body {
     color: #9cbdca;
 }
 
-/* Sidebar */
-.control-sidebar {
-    width: 420px;
-    background: rgba(15, 22, 42, 0.45);
-    backdrop-filter: blur(16px);
+/* Columna 3: Controles */
+.control-column {
+    width: 400px;
+    min-width: 360px;
+    background: rgba(15, 22, 42, 0.25);
     border-left: 1px solid var(--bg-card-border);
+    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 20px;
-    overflow-y: auto;
 }
 
 /* Cards style */
-.control-card {
-    background: var(--bg-card);
-    border: 1px solid var(--bg-card-border);
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
+.control-card {}
 
 .control-card h2 {
     font-family: var(--font-header);
@@ -442,47 +494,87 @@ body {
     transition: width 0.1s linear;
 }
 
-/* Details Guide */
-.guide-details {
-    background: rgba(30, 41, 59, 0.2);
-    border: 1px solid var(--bg-card-border);
-    border-radius: 8px;
+/* Sección de Logs (Ancho Completo) */
+.logs-section {
+    width: 100%;
+    height: 200px;
+    min-height: 140px;
+    max-height: 300px;
+    background: rgba(11, 15, 25, 0.9);
+    border-top: 1px solid var(--bg-card-border);
+    padding: 12px 16px;
+    display: flex;
+    z-index: 5;
 }
 
-.guide-details summary {
-    padding: 10px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    color: #cbd5e1;
-    outline: none;
+.logs-section .console-card {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
 }
 
-.guide-details[open] summary {
-    border-bottom: 1px solid var(--bg-card-border);
+.logs-section .console-box {
+    flex: 1;
+    max-height: none;
+    /* overrides old max-height */
 }
 
-.guide-content {
-    padding: 10px;
+/* Estilos para la Guía en la Columna 1 */
+.guide-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: rgba(20, 27, 45, 0.4);
+}
+
+.guide-content-full {
     font-size: 0.75rem;
     color: var(--text-secondary);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
+    overflow-y: auto;
+    flex: 1;
 }
 
-.guide-content h3 {
+.guide-content-full h3 {
     font-size: 0.8rem;
     color: #f3f4f6;
-    margin-top: 4px;
+    margin-top: 6px;
+    font-family: var(--font-header);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 4px;
 }
 
-.guide-content ul {
-    list-style-position: inside;
-    padding-left: 4px;
+.guide-content-full ul {
+    list-style-type: none;
+    padding-left: 0;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 5px;
+}
+
+.guide-content-full li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 6px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+    border-left: 2px solid var(--color-cyan);
+}
+
+.guide-content-full li strong {
+    font-family: var(--font-mono);
+    color: var(--color-cyan);
 }
 
 .code-example {
@@ -491,25 +583,52 @@ body {
     border-radius: 4px;
     font-family: var(--font-mono);
     color: var(--color-cyan);
+    display: inline-block;
+    width: fit-content;
 }
 
 /* Responsiveness */
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
     .app-main {
         flex-direction: column;
         overflow-y: auto;
     }
-    
-    .control-sidebar {
-        width: 100%;
-        border-left: none;
-        border-top: 1px solid var(--bg-card-border);
+
+    .left-container {
+        flex: none;
         height: auto;
-        overflow-y: visible;
     }
-    
+
+    .top-row {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .column {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        border: none !important;
+    }
+
+    .guide-column {
+        border-bottom: 1px solid var(--bg-card-border) !important;
+    }
+
+    .control-column {
+        border-top: 1px solid var(--bg-card-border) !important;
+        border-left: none !important;
+    }
+
     #canvas-container {
         height: 50vh;
         min-height: 350px;
+        order: -1;
+        /* Mantiene la mano 3D arriba cuando se apilan */
+    }
+
+    .logs-section {
+        height: 180px;
+        border-bottom: 1px solid var(--bg-card-border);
     }
 }

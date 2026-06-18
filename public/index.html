@@ -41,18 +41,65 @@
         </header>
 
         <!-- Main Layout -->
+        <!-- Main Layout -->
         <main class="app-main">
-            <!-- 3D Viewport -->
-            <section class="viewport-section" id="canvas-container">
-                <div class="canvas-overlay">
-                    <div class="instructions-bubble">
-                        <span>Arrastra para rotar • Scroll para zoom • Clic derecho para desplazar</span>
-                    </div>
-                </div>
-            </section>
+            <!-- Contenedor Izquierdo (Guía + Modelo + Logs) -->
+            <div class="left-container">
+                <!-- Fila Superior: Guía y Modelo -->
+                <div class="top-row">
+                    <!-- Columna 1: Guía de Comandos -->
+                    <section class="column guide-column">
+                        <div class="control-card guide-card">
+                            <h2>Guía de Comandos</h2>
+                            <div class="guide-content-full">
+                                <h3>Individuales (Rango / Ángulo)</h3>
+                                <ul>
+                                    <li><strong>A[0-600]</strong>: Meñique (0° - 90°)</li>
+                                    <li><strong>B[0-550]</strong>: Anular (0° - 85°)</li>
+                                    <li><strong>C[0-600]</strong>: Medio (0° - 95°)</li>
+                                    <li><strong>D[0-550]</strong>: Índice (0° - 90°)</li>
+                                    <li><strong>E[0-130]</strong>: Pulgar Inf (0° - 45°)</li>
+                                    <li><strong>F[0-400]</strong>: Pulgar Sup (0° - 90°)</li>
+                                </ul>
+                                <h3>Múltiples</h3>
+                                <p class="guide-text">Separados por comas:</p>
+                                <p class="code-example">A300,B250,C400</p>
+                                <h3>Especiales</h3>
+                                <ul>
+                                    <li><strong>S</strong>: Detener motores (S)</li>
+                                    <li><strong>X</strong>: Calibrar pose cero (X)</li>
+                                    <li><strong>I</strong>: Inicializar ángulos (I)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
 
-            <!-- Control Sidebar -->
-            <section class="control-sidebar">
+                    <!-- Columna 2: Modelo de la mano (Canvas 3D) -->
+                    <section class="column viewport-column" id="canvas-container">
+                        <div class="canvas-overlay">
+                            <div class="instructions-bubble">
+                                <span>Arrastra para rotar • Scroll para zoom • Clic derecho para desplazar</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Sección de Logs (Bajo la Guía y el Modelo) -->
+                <section class="logs-section">
+                    <div class="control-card console-card">
+                        <div class="card-header-flex">
+                            <h2>Consola de Estado y Logs</h2>
+                            <button id="clear-console-btn" class="btn-text">Limpiar logs</button>
+                        </div>
+                        <div id="status-console" class="console-box">
+                            <div class="console-line info">Simulador inicializado. Listo para recibir comandos.</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Contenedor Derecho / Columna 3: Gestos, Entrada y Comandos -->
+            <section class="column control-column">
                 <!-- Preset Gestures Grid -->
                 <div class="control-card">
                     <h2>Gestos Predefinidos</h2>
@@ -76,7 +123,7 @@
                     <h2>Entrada de Comandos</h2>
                     <form id="command-form" class="command-form" onsubmit="return false;">
                         <div class="input-wrapper">
-                            <input type="text" id="commandInput" placeholder="Ej: A300, B250, C400 o Preset" autocomplete="off" autofocus>
+                            <input type="text" id="commandInput" placeholder="Ej: A300, B250 o Preset" autocomplete="off" autofocus>
                             <button type="button" id="clearBtn" class="btn-clear" title="Limpiar input">×</button>
                         </div>
                         <div class="form-actions">
@@ -87,17 +134,6 @@
                         <button class="btn-special" data-cmd="S">DETENER (S)</button>
                         <button class="btn-special" data-cmd="X">CALIBRAR (X)</button>
                         <button class="btn-special" data-cmd="I">REINICIAR (I)</button>
-                    </div>
-                </div>
-
-                <!-- Console & Status Logs -->
-                <div class="control-card console-card">
-                    <div class="card-header-flex">
-                        <h2>Consola de Estado</h2>
-                        <button id="clear-console-btn" class="btn-text">Limpiar logs</button>
-                    </div>
-                    <div id="status-console" class="console-box">
-                        <div class="console-line info">Simulador inicializado. Listo para recibir comandos.</div>
                     </div>
                 </div>
 
@@ -137,30 +173,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Collapsible Guide -->
-                <details class="guide-details">
-                    <summary>Guía de Comandos del Manual</summary>
-                    <div class="guide-content">
-                        <h3>Individuales (Rango / Ángulo)</h3>
-                        <ul>
-                            <li><strong>A[0-600]</strong>: Meñique (0° - 90°)</li>
-                            <li><strong>B[0-550]</strong>: Anular (0° - 85°)</li>
-                            <li><strong>C[0-600]</strong>: Medio (0° - 95°)</li>
-                            <li><strong>D[0-550]</strong>: Índice (0° - 90°)</li>
-                            <li><strong>E[0-130]</strong>: Pulgar Inferior (0° - 45°)</li>
-                            <li><strong>F[0-400]</strong>: Pulgar Superior (0° - 90°)</li>
-                        </ul>
-                        <h3>Múltiples (Separados por coma)</h3>
-                        <p class="code-example">A300,B250,C400</p>
-                        <h3>Especiales</h3>
-                        <ul>
-                            <li><strong>S</strong>: Detener motores inmediatamente.</li>
-                            <li><strong>X</strong>: Calibrar pose actual como cero.</li>
-                            <li><strong>I</strong>: Inicializar/Resetear ángulos a cero.</li>
-                        </ul>
-                    </div>
-                </details>
             </section>
         </main>
     </div>
