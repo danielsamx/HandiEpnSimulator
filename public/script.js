@@ -6,8 +6,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 // ============================================================================
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0b0f19); // Fondo oscuro original
-scene.fog = new THREE.FogExp2(0x0b0f19, 0.018);
+scene.background = new THREE.Color(0xababab); // Light gray background
+scene.fog = new THREE.FogExp2(0xababab, 0.018);
+// Removed old fog line
 
 const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
 camera.position.set(0, 12, 20);
@@ -497,10 +498,10 @@ function buildThumb() {
 // --- POSICIONAMIENTO DE LOS DEDOS ---
 // Coordenadas (x, y, z) respecto a la palma + splay angular
 // Los nudillos siguen un arco natural: medio es el más alto, meñique el más bajo
-buildFinger('D',  1.15, 4.55, 0, -0.04, 1.02, 1.0);   // Índice
-buildFinger('C',  0.35, 4.75, 0,  0.00, 1.08, 1.1);   // Medio (más largo)
-buildFinger('B', -0.45, 4.55, 0,  0.03, 1.00, 1.02);  // Anular
-buildFinger('A', -1.15, 4.25, 0,  0.07, 0.90, 0.88);  // Meñique (más corto)
+buildFinger('D', 1.15, 4.55, 0, -0.04, 1.02, 1.0);   // Índice
+buildFinger('C', 0.35, 4.75, 0, 0.00, 1.08, 1.1);   // Medio (más largo)
+buildFinger('B', -0.45, 4.55, 0, 0.03, 1.00, 1.02);  // Anular
+buildFinger('A', -1.15, 4.25, 0, 0.07, 0.90, 0.88);  // Meñique (más corto)
 buildThumb();
 
 // Posición y rotación inicial de la mano
@@ -543,9 +544,9 @@ function applyRotations() {
     ['A', 'B', 'C', 'D'].forEach(f => {
         const rad = degToRad(f, currentAngles[f]);
         const b = bones[f];
-        if (b.proximal)     b.proximal.rotation.x     = -rad * 0.40;
+        if (b.proximal) b.proximal.rotation.x = -rad * 0.40;
         if (b.intermediate) b.intermediate.rotation.x = -rad * 0.35;
-        if (b.distal)       b.distal.rotation.x       = -rad * 0.30;
+        if (b.distal) b.distal.rotation.x = -rad * 0.30;
     });
 
     // --- Pulgar: Articulación CMC (E) = Oposición multiaxial ---
@@ -566,7 +567,7 @@ function applyRotations() {
     if (bones.F.proximal || bones.F.distal) {
         const rad = degToRad('F', currentAngles['F']);
         if (bones.F.proximal) bones.F.proximal.rotation.x = -rad * 0.65;
-        if (bones.F.distal)   bones.F.distal.rotation.x   = -rad * 0.55;
+        if (bones.F.distal) bones.F.distal.rotation.x = -rad * 0.55;
     }
 }
 

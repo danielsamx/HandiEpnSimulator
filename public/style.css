@@ -181,7 +181,7 @@ body {
 .viewport-column {
     flex: 2;
     position: relative;
-    background: #16202e; // Slightly lighter than previous #111824
+    background: #e0e0e0; // Light gray background for better visibility
     /* Fondo oscuro original */
     overflow: hidden;
     /* El canvas de Three.js no debe scrollear */
