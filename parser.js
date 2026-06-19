@@ -1,7 +1,7 @@
 const CONFIG = {
     'A': { min: 0, max: 600, angleMin: 0, angleMax: 90, name: 'Meñique' },
-    'B': { min: 0, max: 800, angleMin: 0, angleMax: 130, name: 'Anular' },
-    'C': { min: 0, max: 800, angleMin: 0, angleMax: 150, name: 'Medio' },
+    'B': { min: 0, max: 800, angleMin: 0, angleMax: 85, name: 'Anular' },
+    'C': { min: 0, max: 800, angleMin: 0, angleMax: 95, name: 'Medio' },
     'D': { min: 0, max: 550, angleMin: 0, angleMax: 90, name: 'Índice' },
     'E': { min: 0, max: 130, angleMin: 0, angleMax: 45, name: 'Pulgar Inferior' },
     'F': { min: 0, max: 400, angleMin: 0, angleMax: 90, name: 'Pulgar Superior' }
@@ -22,7 +22,7 @@ const PRESETS = {
     },
     'R': {
         description: 'Gesto de Spiderman (medio y anular doblados)',
-        angles: { A: 0, B: 130, C: 150, D: 0, E: 0, F: 0 }
+        angles: { A: 0, B: 85, C: 95, D: 0, E: 0, F: 0 }
     },
     'W': {
         description: 'Garra parcial (dedo índice y anular cerrados)',
@@ -104,11 +104,11 @@ function interceptCommand(text) {
         throw new Error('El comando debe ser una cadena de texto.');
     }
     text = text.toUpperCase().replace(/\s+/g, '');
-    
+
     if (!text) {
         throw new Error('Comando vacío.');
     }
-    
+
     // 1. Verificar comandos especiales (S, X, I)
     if (SPECIALS[text]) {
         return {
@@ -117,7 +117,7 @@ function interceptCommand(text) {
             description: SPECIALS[text]
         };
     }
-    
+
     // 2. Verificar comandos compuestos (presets)
     if (PRESETS[text]) {
         return {
@@ -127,7 +127,7 @@ function interceptCommand(text) {
             description: PRESETS[text].description
         };
     }
-    
+
     // 3. Verificar comandos múltiples (separados por comas)
     if (text.includes(',')) {
         const result = parseMultipleCommands(text);
@@ -137,7 +137,7 @@ function interceptCommand(text) {
             description: result.description
         };
     }
-    
+
     // 4. Verificar comando individual
     const result = parseIndividualCommand(text);
     return {

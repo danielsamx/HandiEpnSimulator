@@ -516,7 +516,7 @@ const currentAngles = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0 };
 let isStopped = false;
 const LERP_FACTOR = 0.08;
 
-const MAX_DEG = { A: 90, B: 130, C: 150, D: 90, E: 45, F: 90 };
+const MAX_DEG = { A: 90, B: 95, C: 95, D: 90, E: 45, F: 90 };
 
 function degToRad(finger, deg) {
     const clamped = Math.max(0, Math.min(deg, MAX_DEG[finger]));
