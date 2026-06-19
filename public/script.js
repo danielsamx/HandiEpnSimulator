@@ -689,6 +689,17 @@ document.querySelectorAll('.btn-special').forEach(btn => {
     btn.addEventListener('click', () => sendCommand(btn.getAttribute('data-cmd')));
 });
 
+// Hand side toggle
+let isRightHand = false;
+const toggleHandBtn = document.getElementById('toggle-hand-btn');
+if (toggleHandBtn) {
+  toggleHandBtn.addEventListener('click', () => {
+    isRightHand = !isRightHand;
+    handGroup.scale.set(isRightHand ? -1 : 1, 1, 1);
+    toggleHandBtn.textContent = isRightHand ? 'Cambiar a mano izquierda' : 'Cambiar a mano derecha';
+  });
+}
+
 window.addEventListener('resize', () => {
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
